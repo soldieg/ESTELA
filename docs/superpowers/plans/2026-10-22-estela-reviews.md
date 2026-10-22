@@ -35,6 +35,8 @@
 
 **Files:**
 - Create: `worker/package.json`
+- Create: `worker/package-lock.json`
+- Create: `worker/.gitignore`
 - Create: `worker/wrangler.toml`
 - Create: `worker/src/validation.js`
 - Create: `worker/test/validation.test.js`
@@ -44,10 +46,10 @@
 - Produces `escapeIssueText(text)`: escapes user text before inserting it into the Markdown Issue body.
 - Consumes only standard `FormData`, `File`, and Node test APIs; no runtime dependencies.
 
-- [ ] Write tests for both allowed categories, integer ratings 0–5, required comment, length limits, anonymous-name omission, accepted image types/size, oversized image, SVG rejection, and Markdown/script-looking text.
-- [ ] Run `node --test worker/test/validation.test.js`; confirm the new tests fail before implementation.
-- [ ] Implement the validators and Wrangler Worker/R2 bindings with no GitHub token values in tracked files.
-- [ ] Run `node --test worker/test/validation.test.js`; confirm all cases pass.
+- [x] Write tests for both allowed categories, integer ratings 0–5, required comment, length limits, anonymous-name omission, accepted image types/size, oversized image, SVG rejection, and Markdown/script-looking text.
+- [x] Run `node --test worker/test/validation.test.js`; confirm the new tests fail before implementation.
+- [x] Implement the validators and Wrangler Worker/R2 bindings with no GitHub token values in tracked files.
+- [x] Run `node --test worker/test/validation.test.js`; confirm all cases pass.
 
 ### Task 2: Submission, approved-list, and photo endpoints
 
