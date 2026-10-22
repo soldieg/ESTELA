@@ -64,10 +64,10 @@
 - `POST /internal/reviews/photo/:photoId`: deletes the private R2 object after a GitHub deletion event; requires the cleanup secret.
 - Issue title starts `[AVALIAÇÃO]`; the body has fixed category/rating/name/comment/photo fields and a version marker. Anonymous submissions omit the provided name.
 
-- [ ] Write endpoint tests for valid Salon/Ateliê submissions, anonymous body, invalid Turnstile, wrong Origin, invalid data, GitHub failure, R2 failure, open/closed/reopened photo access, and cleanup-secret rejection.
-- [ ] Run `node --test worker/test/*.test.js`; confirm the new endpoint tests fail before implementation.
-- [ ] Implement the Worker using GitHub REST and R2 bindings; return CORS headers only for the configured site origin and cache the public listing briefly.
-- [ ] Run `node --test worker/test/*.test.js`; confirm all cases pass, including no success response when an Issue was not created.
+- [x] Write endpoint tests for valid Salon/Ateliê submissions, anonymous body, invalid Turnstile, wrong Origin, invalid data, GitHub failure, R2 failure, open/closed/reopened photo access, and cleanup-secret rejection.
+- [x] Run `node --test worker/test/*.test.js`; confirm the new endpoint tests fail before implementation.
+- [x] Implement the Worker using GitHub REST and R2 bindings; return CORS headers only for the configured site origin and cache the public listing briefly.
+- [x] Run `node --test worker/test/*.test.js`; confirm all cases pass, including no success response when an Issue was not created.
 
 ### Task 3: GitHub review lifecycle workflows
 
