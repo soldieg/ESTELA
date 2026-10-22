@@ -1,0 +1,12 @@
+name = "estela-review-api"
+main = "src/index.js"
+compatibility_date = "2026-10-22"
+
+[vars]
+SITE_ORIGIN = "https://soldieg.github.io"
+GITHUB_OWNER = "soldieg"
+GITHUB_REPO = "ESTELA"
+
+[[r2_buckets]]
+binding = "REVIEW_PHOTOS"
+bucket_name = "estela-review-photos"
