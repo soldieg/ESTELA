@@ -81,10 +81,10 @@
 - Workflow permissions are limited to `issues: write`; the Worker cleanup secret is used only for deletion events, and the workflow passes the deleted Issue's `photoId`.
 - Labels: `estela-review` plus exactly one category label (`review-salao` or `review-atelie`).
 
-- [ ] Test opened Salon/Ateliê events, unrelated issues, deletion cleanup, and events with malformed payloads.
-- [ ] Run `node --test .github/scripts/review-issue-event.test.mjs`; confirm tests fail before implementation.
-- [ ] Implement the event planner and workflow with no shell interpolation of untrusted Issue text.
-- [ ] Run the event tests and inspect the workflow to confirm narrow permissions and correct event types.
+- [x] Test opened Salon/Ateliê events, unrelated issues, deletion cleanup, and events with malformed payloads.
+- [x] Run `node --test .github/scripts/review-issue-event.test.mjs`; confirm tests fail before implementation.
+- [x] Implement the event planner and workflow with no shell interpolation of untrusted Issue text.
+- [x] Run the event tests and inspect the workflow to confirm narrow permissions and correct event types.
 
 ### Task 4: Review form and public review UI
 

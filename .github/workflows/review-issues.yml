@@ -1,0 +1,25 @@
+name: Moderate review Issues
+
+on:
+  issues:
+    types: [opened, deleted]
+
+permissions:
+  issues: write
+
+jobs:
+  review-event:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply review labels or remove deleted review photo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          REVIEW_WORKER_URL: ${{ vars.REVIEW_WORKER_URL }}
+          PHOTO_CLEANUP_SECRET: ${{ secrets.PHOTO_CLEANUP_SECRET }}
+        run: node .github/scripts/review-issue-event.mjs
