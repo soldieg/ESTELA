@@ -56,7 +56,7 @@
 - Create: `worker/test/worker.test.js`
 
 **Interfaces:**
-- `POST /api/reviews`: accepts multipart form data, verifies Turnstile and Origin, stores an optional image, then creates an Issue; returns only a success message and issue number.
+- `POST /api/reviews`: accepts multipart form data, verifies Turnstile and Origin, stores an optional image, then creates an Issue; returns a generic success message without the moderation URL or issue number.
 - `GET /api/reviews`: returns normalized reviews only from closed Issues carrying the review marker; returns no GitHub token or untrusted HTML.
 - `GET /api/reviews/:number/photo`: serves the private R2 object only if the matching Issue is closed and references that photo.
 - `POST /internal/reviews/:number/photo`: deletes the private R2 object after a GitHub deletion event; requires the cleanup secret.
@@ -96,8 +96,8 @@
 - Create: `tests/reviews-ui.test.js`
 
 **Interfaces:**
-- Review API URL is configured by a public `meta[name="estela-reviews-api"]` value; no secret is placed in HTML/JavaScript.
-- `assets/reviews.js` renders review text with `textContent`, wires the form, and handles category/rating/sort filters on `avaliacoes.html`.
+- Review API URL and Turnstile public site key are configured through public meta values; no secret is placed in HTML/JavaScript.
+- `filterAndSortReviews(reviews, filters)` in `assets/reviews.js` returns a new array filtered by category/rating and sorted by `newest`, `oldest`, or `highest` (ties newest first). The module renders review text using `textContent`, wires the form, and handles filters on `avaliacoes.html`.
 - Each service page shows recent reviews for its category below its work-photo gallery and links to `avaliacoes.html?categoria=...`.
 - `avaliacoes.html` supports both categories, rating filter, newest/oldest/highest-rated sort, and the form. The first visit shows a clear empty state, not sample reviews.
 
