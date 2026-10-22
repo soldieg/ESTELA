@@ -1,6 +1,7 @@
 document.querySelectorAll("[data-copy-address]").forEach((button) => {
+  let toastTimer;
   button.addEventListener("click", async () => {
-    const status = button.querySelector(".copy-status");
+    const toast = button.parentElement.querySelector(".copy-toast");
     try {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(button.dataset.copyAddress);
@@ -15,9 +16,15 @@ document.querySelectorAll("[data-copy-address]").forEach((button) => {
         field.remove();
         if (!copied) throw new Error("copy failed");
       }
-      status.textContent = "Endereço copiado!";
+      toast.textContent = "Endereço copiado!";
     } catch {
-      status.textContent = "Não foi possível copiar. Selecione o endereço manualmente.";
+      toast.textContent = "Não foi possível copiar. Selecione o destino manualmente.";
     }
+    toast.classList.add("is-visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove("is-visible");
+      toast.textContent = "";
+    }, 2200);
   });
 });
