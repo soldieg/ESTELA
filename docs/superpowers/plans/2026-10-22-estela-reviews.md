@@ -59,7 +59,7 @@
 - `POST /api/reviews`: accepts multipart form data, verifies Turnstile and Origin, stores an optional image, then creates an Issue; returns a generic success message without the moderation URL or issue number.
 - `GET /api/reviews`: returns normalized reviews only from closed Issues carrying the review marker; returns no GitHub token or untrusted HTML.
 - `GET /api/reviews/:number/photo`: serves the private R2 object only if the matching Issue is closed and references that photo.
-- `POST /internal/reviews/:number/photo`: deletes the private R2 object after a GitHub deletion event; requires the cleanup secret.
+- `POST /internal/reviews/photo/:photoId`: deletes the private R2 object after a GitHub deletion event; requires the cleanup secret.
 - Issue title starts `[AVALIAÇÃO]`; the body has fixed category/rating/name/comment/photo fields and a version marker. Anonymous submissions omit the provided name.
 
 - [ ] Write endpoint tests for valid Salon/Ateliê submissions, anonymous body, invalid Turnstile, wrong Origin, invalid data, GitHub failure, R2 failure, open/closed/reopened photo access, and cleanup-secret rejection.
@@ -75,8 +75,8 @@
 - Create: `.github/scripts/review-issue-event.test.mjs`
 
 **Interfaces:**
-- `planIssueEvent(payload)` returns a label action for a newly opened `[AVALIAÇÃO]` Issue, a cleanup action for an Issue deletion, or `null` for unrelated events.
-- Workflow permissions are limited to `issues: write`; the Worker cleanup secret is used only for deletion events.
+- `planIssueEvent(payload)` returns a label action for a newly opened `[AVALIAÇÃO]` Issue, a cleanup action containing the random `photoId` parsed from a deleted Issue body, or `null` for unrelated events.
+- Workflow permissions are limited to `issues: write`; the Worker cleanup secret is used only for deletion events, and the workflow passes the deleted Issue's `photoId`.
 - Labels: `estela-review` plus exactly one category label (`review-salao` or `review-atelie`).
 
 - [ ] Test opened Salon/Ateliê events, unrelated issues, deletion cleanup, and events with malformed payloads.
