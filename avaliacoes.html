@@ -3,9 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7f3ee"><meta name="description" content="Avaliações do Salão de beleza e do Ateliê da Estela Roschel.">
-  <meta name="reviews-api-url" content=""><meta name="turnstile-site-key" content="">
   <title>Avaliações | Estela Roschel</title><link rel="stylesheet" href="assets/site.css">
-  <script type="module" src="assets/reviews.js"></script>
 </head>
 <body class="reviews-page">
   <div class="preview-ribbon">Salão de beleza · Ateliê · Parelheiros</div>
@@ -14,43 +12,11 @@
     <nav class="top-nav" aria-label="Navegação principal"><a href="beleza.html">Salão de beleza</a><a href="costura.html">Ateliê</a></nav>
   </header>
   <main>
-    <section class="service-intro wrap"><a class="back-link" href="index.html">← Início</a><p class="eyebrow">Experiências reais</p><h1>Palavras que<br><em>fazem carinho.</em></h1><p class="intro">Veja avaliações aprovadas e conte como foi sua experiência com o Salão de beleza ou o Ateliê.</p></section>
-    <section class="wrap reviews-content" aria-labelledby="all-reviews-heading">
-      <div class="reviews-toolbar"><div><p class="eyebrow">Da comunidade</p><h2 id="all-reviews-heading">Avaliações</h2></div>
-        <div class="review-filters">
-          <label>Serviço<select id="filter-category"><option value="all">Todos</option><option value="salon">Salão de beleza</option><option value="atelier">Ateliê</option></select></label>
-          <label>Nota<select id="filter-rating"><option value="all">Todas</option><option value="5">5 estrelas</option><option value="4">4 estrelas</option><option value="3">3 estrelas</option><option value="2">2 estrelas</option><option value="1">1 estrela</option><option value="0">0 estrelas</option></select></label>
-          <label>Ordenar<select id="sort-reviews"><option value="newest">Mais recentes</option><option value="oldest">Mais antigas</option><option value="highest">Melhor avaliadas</option></select></label>
-        </div>
-      </div>
-      <p class="review-status" data-reviews-status aria-live="polite">Carregando avaliações…</p>
-      <div class="review-grid review-grid-large" data-all-reviews></div>
-      <p class="review-empty" data-review-empty hidden>Nenhuma avaliação aprovada com esses filtros.</p>
-    </section>
-    <section class="review-form-band">
-      <div class="wrap review-form-layout">
-        <div class="review-form-intro"><p class="eyebrow">Sua experiência</p><h2>Envie sua avaliação</h2><p>As avaliações são analisadas antes de aparecerem nesta página. Uma avaliação enviada fica visível publicamente no GitHub enquanto aguarda aprovação.</p><p>Se marcar “Enviar anonimamente”, o nome digitado não será incluído. O Issue continua público e é criado pela conta do site. O provedor pode processar o IP para segurança; ele não será publicado como parte da avaliação.</p></div>
-        <form id="review-form" class="review-form">
-          <label>Onde você foi?<select name="category" required><option value="salon">Salão de beleza</option><option value="atelier">Ateliê</option></select></label>
-          <fieldset class="rating-field"><legend>Sua nota</legend><div class="rating-options">
-            <label><input type="radio" name="rating" value="0" required><span>☆☆☆☆☆</span><small>0 · Muito insatisfeito</small></label>
-            <label><input type="radio" name="rating" value="1"><span>★☆☆☆☆</span><small>1 · Tive um problema</small></label>
-            <label><input type="radio" name="rating" value="2"><span>★★☆☆☆</span><small>2 · Abaixo do esperado</small></label>
-            <label><input type="radio" name="rating" value="3"><span>★★★☆☆</span><small>3 · Bom</small></label>
-            <label><input type="radio" name="rating" value="4"><span>★★★★☆</span><small>4 · Muito bom</small></label>
-            <label><input type="radio" name="rating" value="5"><span>★★★★★</span><small>5 · Excelente</small></label>
-          </div></fieldset>
-          <label>Seu nome <span class="optional">(opcional)</span><input name="name" maxlength="60" autocomplete="name" placeholder="Como podemos chamar você?"></label>
-          <label class="check-row"><input type="checkbox" name="anonymous"> Enviar anonimamente</label>
-          <label>Seu comentário<textarea name="comment" required maxlength="1000" rows="5" placeholder="Conte como foi sua experiência"></textarea><small>Até 1.000 caracteres.</small></label>
-          <label>Foto <span class="optional">(opcional · JPG, PNG ou WebP até 5 MB)</span><input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></label>
-          <div id="turnstile-widget"></div><input type="hidden" name="turnstileToken" value="">
-          <p class="public-notice">Ao enviar, sua avaliação será registrada em um Issue público do GitHub para moderação. Apenas avaliações aprovadas aparecem no site. Não inclua dados pessoais no comentário ou na foto.</p>
-          <p id="form-config-status" class="form-status" aria-live="polite"></p>
-          <button class="button button-dark" type="submit">Enviar avaliação</button>
-          <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
-        </form>
-      </div>
+    <section class="service-intro wrap"><a class="back-link" href="index.html">← Início</a><p class="eyebrow">Experiências reais</p><h1>Avaliações do<br><em>Google.</em></h1><p class="intro">Veja as opiniões direto no Google ou compartilhe sua experiência por lá.</p></section>
+    <section class="wrap google-reviews-page" aria-labelledby="all-reviews-heading">
+      <div class="section-heading"><p class="eyebrow">Salão de beleza · Parelheiros</p><h2 id="all-reviews-heading">Nota e avaliações</h2></div>
+      <div class="google-review-summary google-review-summary-large"><div class="google-rating"><strong>4,9</strong><span class="google-stars" aria-label="4,9 de 5 estrelas">★★★★★</span><small>8 avaliações no Google</small></div><div class="google-review-actions"><a class="button button-dark" href="https://www.google.com/maps/place/Salao+De+Manicure+Da+Estela/@-23.8289086,-46.7301332,17z/data=!4m8!3m7!1s0x94ce4965434d6dcd:0x17b5057b20aff41b!8m2!3d-23.8289649!4d-46.730163!9m1!1b1!16s%2Fg%2F11hcds3b78" target="_blank" rel="noopener">Ler avaliações no Google ↗</a><a class="google-review-link" href="https://www.google.com/maps/place/Salao+De+Manicure+Da+Estela/@-23.8289086,-46.7301332,17z/data=!4m8!3m7!1s0x94ce4965434d6dcd:0x17b5057b20aff41b!8m2!3d-23.8289649!4d-46.730163!9m1!1b1!16s%2Fg%2F11hcds3b78" target="_blank" rel="noopener">Escrever avaliação no Google</a></div></div>
+      <p class="google-reviews-note">A ficha do Google é a fonte completa e atual das avaliações.</p>
     </section>
   </main>
   <footer class="site-footer wrap"><a class="wordmark footer-wordmark" href="index.html">Estela <span>Roschel</span></a><span><a href="beleza.html">Salão de beleza</a> · <a href="costura.html">Ateliê</a></span></footer>

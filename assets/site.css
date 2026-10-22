@@ -54,3 +54,21 @@
 .location-contact .eyebrow{color:#e8cbd2}
 .location-contact .button-disabled{margin-top:8px}
 @media(max-width:760px){.location-layout{grid-template-columns:1fr;gap:28px}.location-contact{align-items:center;padding:22px;text-align:center}}
+
+/* Google Maps pin, route options and Google review summary */
+.location-home-layout{display:grid;grid-template-columns:minmax(270px,.85fr) minmax(0,1.15fr);align-items:center;gap:clamp(28px,5vw,64px)}
+.location-map{min-width:0;overflow:hidden;border:1px solid rgba(255,255,255,.28);border-radius:8px;background:rgba(255,255,255,.06)}
+.location-map iframe{display:block;width:100%;height:310px;border:0}
+.location-layout{grid-template-columns:minmax(230px,.9fr) minmax(270px,1.05fr) minmax(220px,.8fr);gap:clamp(18px,3vw,38px)}
+.location-layout .location-inner h2{font-size:clamp(1.75rem,2.4vw,2.3rem);line-height:1.15}
+.location-contact{min-width:0}.location-contact p:last-child{color:#e5d9d5}
+.google-review-summary{display:grid;grid-template-columns:minmax(140px,.65fr) minmax(220px,1.35fr);align-items:center;gap:24px;max-width:780px;padding:24px;border:1px solid var(--line);background:#fffaf5}
+.google-rating{display:grid;justify-items:start;gap:2px}.google-rating strong{font:400 3.4rem/1 var(--serif);color:var(--plum-dark)}
+.google-stars{color:var(--plum);font-size:1.15rem;letter-spacing:.12em}.google-rating small{color:var(--muted);font-size:.82rem}
+.google-review-actions{display:flex;flex-direction:column;align-items:flex-start;gap:9px}.google-review-actions .button{margin-top:0}
+.google-review-link{color:var(--plum-dark);font-size:.88rem;font-weight:700;text-decoration:underline;text-underline-offset:4px}
+.google-reviews-page{min-height:300px;padding-bottom:82px}.google-review-summary-large{max-width:900px;padding:clamp(24px,5vw,46px)}
+.google-review-summary-large .google-rating strong{font-size:4.5rem}.google-reviews-note{margin-top:14px;color:var(--muted);font-size:.82rem}
+@media(max-width:980px){.location-layout{grid-template-columns:minmax(0,.9fr) minmax(260px,1.1fr)}.location-contact{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between}}
+@media(max-width:760px){.location-layout,.location-home-layout{grid-template-columns:1fr;gap:28px}.location-map iframe{height:280px}.location-contact{grid-column:auto;flex-direction:column;align-items:center;text-align:center}}
+@media(max-width:480px){.google-review-summary{grid-template-columns:1fr;gap:16px;padding:20px}.google-review-actions{align-items:stretch}.google-review-actions .button{width:100%}.google-review-summary-large .google-rating strong{font-size:3.5rem}}
