@@ -208,7 +208,12 @@ h1 em { color: var(--plum); font-weight: 400; }
   font-weight: 700;
 }
 .button-disabled { background: #ded8d0; color: #655c55; }
-.route-actions { display: flex; justify-content: center; gap: 12px; margin-top: 22px; }
+.button-route { background: var(--plum-dark); color: var(--paper); text-decoration: none; }
+.button-route:hover { background: var(--plum); }
+.button-route:focus-visible { outline: 3px solid var(--sage); outline-offset: 3px; }
+.location-band .button-route { background: var(--paper); color: var(--plum-dark); }
+.location-band .button-route:hover { background: #e1c4c9; }
+.route-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 22px; }
 .route-actions-left { max-width: 780px; justify-content: flex-start; margin: 24px auto 0; }
 .route-note { max-width: 780px; margin: 10px auto 0; color: var(--muted); font-size: .88rem; }
 @media (max-width: 720px) {
