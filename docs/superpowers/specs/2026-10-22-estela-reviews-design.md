@@ -11,25 +11,25 @@
 - Nome opcional e opção “Enviar anonimamente”. No modo anônimo, o nome informado não é incluído no Issue nem mostrado no site.
 - Comentário obrigatório; uma foto opcional.
 - Issue aberto = aguardando moderação e não aparece no site. Issue fechado = aprovado e aparece. Reabrir remove a avaliação da vitrine. Issue excluído deixa de ser exibido.
-- Issues e comentários são públicos desde a criação. “Anônimo” oculta o nome informado, mas não torna o Issue privado; Issues criados pela integração mostram a conta GitHub proprietária do token, não a conta do visitante.
+- Issues e comentários são públicos desde a criação. “Anônimo” oculta o nome informado, mas não torna o Issue privado; Issues criados pela integração mostram a conta GitHub proprietária do token, não a conta do visitante. O Cloudflare pode processar o IP para segurança da conexão; ele não será incluído no Issue nem salvo como campo da avaliação.
 
 ## Componentes e fluxo
 
 1. O formulário na página de avaliações envia os campos por HTTPS a um endpoint do Cloudflare Worker. O navegador nunca recebe o token do GitHub.
 2. O Worker valida origem, campos permitidos, categoria, nota, tamanho do comentário e formato/tamanho da foto; valida também um token Turnstile no servidor para reduzir spam.
 3. Se houver foto, o Worker guarda o arquivo num bucket privado Cloudflare R2, com identificador aleatório e validação de tipo/tamanho. O Issue guarda apenas os dados da avaliação e o identificador da foto.
-4. O Worker usa um token GitHub de escopo mínimo, guardado como segredo, para criar um Issue com título `[AVALIAÇÃO] Salão` ou `[AVALIAÇÃO] Ateliê` e corpo estruturado. O token precisa apenas da permissão de escrita em Issues no repositório. O formulário confirma o recebimento e não revela a URL privada de moderação.
+4. O Worker usa um token GitHub de escopo mínimo, guardado como segredo, para criar um Issue com título `[AVALIAÇÃO] Salão` ou `[AVALIAÇÃO] Ateliê` e corpo estruturado. O token precisa apenas da permissão de escrita em Issues no repositório. O formulário confirma o recebimento e não revela a URL de moderação.
 5. Um GitHub Action acionado em `issues.opened` adiciona um marcador de avaliação e a categoria. O endpoint público de listagem busca apenas Issues fechados que tenham o marcador; isso evita exibir Issues fechados que não sejam avaliações. O site oferece filtros por categoria e nota, ordenação por mais recentes, mais antigas e melhor avaliadas, e estados de carregamento/erro/nenhuma avaliação.
-6. A foto só é entregue pelo Worker depois que o Issue correspondente estiver fechado e contiver o identificador da foto. Assim, a imagem não aparece antes da aprovação. A exclusão do Issue impede novas entregas da imagem; objetos órfãos precisam de uma regra de expiração no R2.
+6. A foto só é entregue pelo Worker depois que o Issue correspondente estiver fechado e contiver o identificador da foto. Assim, a imagem não aparece antes da aprovação. Em caso de exclusão do Issue, um evento do GitHub Action solicita ao Worker a remoção do objeto correspondente; uploads temporários sem Issue expiram automaticamente.
 7. O conteúdo textual do Issue permanece público durante a moderação. Remover do site ao reabrir/excluir não apaga cópias ou capturas feitas por terceiros.
 
 ## Limites e tratamento de falhas
 
 - Se Turnstile, GitHub ou armazenamento falhar, o Worker não confirma sucesso; a interface informa que o envio não foi concluído e permite tentar novamente.
-- O token GitHub e o segredo Turnstile ficam em variáveis secretas do Worker; apenas a chave pública do widget Turnstile pode ir no HTML.
+- O token GitHub, o segredo Turnstile e a autorização para limpeza de fotos ficam em variáveis secretas do Worker/Actions; apenas a chave pública do widget Turnstile pode ir no HTML.
 - A resposta da API pública será validada e armazenada em cache por período curto no Worker. O site renderiza texto como texto (não HTML), limita resultados e não incorpora campos arbitrários.
 - Para o primeiro teste, limitar foto a JPEG, PNG ou WebP, uma imagem por envio, até 5 MB. SVG e outros formatos são recusados.
-- O formulário informa antes do envio que avaliação, categoria, nota e nome informado (se houver) ficam visíveis publicamente no GitHub. A imagem só fica acessível no site após aprovação.
+- O formulário informa antes do envio que avaliação, categoria, nota e nome informado (se houver) ficam visíveis publicamente no GitHub. A imagem só fica acessível no site após aprovação. O aviso esclarece que o provedor pode processar o IP para segurança, sem incluí-lo na avaliação.
 
 ## Fora deste escopo
 
@@ -39,7 +39,7 @@ Não publicar avaliações por conta própria em X, não exigir conta GitHub do 
 
 - Um envio válido pelo site cria um Issue aberto na categoria correta; nenhuma credencial aparece no HTML, JavaScript ou rede do navegador.
 - Envio anônimo não inclui o nome digitado no conteúdo do Issue nem no site.
-- Issues abertos não aparecem na vitrine nem liberam a foto; fechar um Issue válido o torna visível e libera a foto; reabrir ou excluir remove o conteúdo da vitrine.
+- Issues abertos não aparecem na vitrine nem liberam a foto; fechar um Issue válido o torna visível e libera a foto; reabrir ou excluir remove o conteúdo da vitrine e a exclusão remove a foto privada.
 - Filtros e ordenações respeitam categoria, nota e data, sem renderizar conteúdo do comentário como HTML.
 - Entradas inválidas, excesso de tamanho, formato de foto recusado e falha de antirobô não criam Issue.
 - O teste cobre o caminho aprovado, pendente, reaberto, excluído e envio inválido.
