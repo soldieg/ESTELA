@@ -24,6 +24,7 @@ const env = () => ({
       const object = this.objects.get(key);
       return object ? { body: object.body, httpMetadata: object.metadata?.httpMetadata } : null;
     },
+    async head(key) { return this.objects.has(key) ? {} : null; },
     async delete(key) { this.objects.delete(key); },
   },
 });
@@ -152,6 +153,18 @@ test("rejects invalid review fields before calling GitHub", async (t) => {
   assert.equal(issueCreated, false);
 });
 
+test("bounds multipart bodies even when Content-Length is absent", async (t) => {
+  requireWorker();
+  let called = false;
+  installFetch(t, async () => { called = true; return jsonResponse({ success: true }); });
+  const oversized = new Uint8Array(5 * 1024 * 1024 + 64 * 1024 + 1);
+  const response = await worker.fetch(new Request("https://worker.test/api/reviews", {
+    method: "POST", headers: { Origin: origin, "Content-Type": "multipart/form-data; boundary=missing" }, body: oversized,
+  }), env());
+  assert.equal(response.status, 413);
+  assert.equal(called, false);
+});
+
 test("removes a temporary photo and reports failure if GitHub rejects the Issue", async (t) => {
   requireWorker();
   const bindings = env();
@@ -186,9 +199,9 @@ test("does not create an Issue when private photo storage fails", async (t) => {
   assert.equal(issueCreated, false);
 });
 
-test("lists only closed Issues carrying valid review metadata", async (t) => {
+test("lists only closed Issues carrying valid review metadata and omits missing photos", async (t) => {
   requireWorker();
-  const data = { version: 1, category: "salon", rating: 5, anonymous: true, name: "", comment: "Ótimo trabalho", photoId: null };
+  const data = { version: 1, category: "salon", rating: 5, anonymous: true, name: "", comment: "Ótimo trabalho", photoId: "8a87189e-44fc-45b6-bd34-c507194136cb" };
   const encoded = Buffer.from(JSON.stringify(data)).toString("base64url");
   installFetch(t, async (url) => {
     assert.match(url, /state=closed/);
@@ -213,7 +226,7 @@ test("serves a private photo only while its review Issue is closed", async (t) =
   requireWorker();
   const bindings = env();
   const photoId = "8a87189e-44fc-45b6-bd34-c507194136cb";
-  bindings.REVIEW_PHOTOS.objects.set(photoId, {
+  bindings.REVIEW_PHOTOS.objects.set(`approved/${photoId}`, {
     body: new Uint8Array([1, 2, 3]),
     metadata: { httpMetadata: { contentType: "image/jpeg" } },
   });
@@ -235,7 +248,7 @@ test("serves a private photo only while its review Issue is closed", async (t) =
 test("rejects photo cleanup without the private cleanup secret", async (t) => {
   requireWorker();
   const bindings = env();
-  bindings.REVIEW_PHOTOS.objects.set("8a87189e-44fc-45b6-bd34-c507194136cb", { body: new Uint8Array([1]) });
+  bindings.REVIEW_PHOTOS.objects.set("pending/8a87189e-44fc-45b6-bd34-c507194136cb", { body: new Uint8Array([1]) });
   const response = await worker.fetch(new Request("https://worker.test/internal/reviews/photo/8a87189e-44fc-45b6-bd34-c507194136cb", {
     method: "POST", headers: { Authorization: "Bearer wrong" },
   }), bindings);
@@ -247,10 +260,25 @@ test("deletes a photo with the cleanup secret", async (t) => {
   requireWorker();
   const bindings = env();
   const photoId = "8a87189e-44fc-45b6-bd34-c507194136cb";
-  bindings.REVIEW_PHOTOS.objects.set(photoId, { body: new Uint8Array([1]) });
+  bindings.REVIEW_PHOTOS.objects.set(`approved/${photoId}`, { body: new Uint8Array([1]) });
   const response = await worker.fetch(new Request(`https://worker.test/internal/reviews/photo/${photoId}`, {
     method: "POST", headers: { Authorization: "Bearer cleanup-secret" },
   }), bindings);
   assert.equal(response.status, 204);
   assert.equal(bindings.REVIEW_PHOTOS.objects.size, 0);
+});
+
+test("promotes a pending photo after approval and requires the cleanup secret", async (t) => {
+  requireWorker();
+  const bindings = env();
+  const photoId = "8a87189e-44fc-45b6-bd34-c507194136cb";
+  bindings.REVIEW_PHOTOS.objects.set(`pending/${photoId}`, { body: new Uint8Array([1, 2]), metadata: { httpMetadata: { contentType: "image/jpeg" } } });
+  const unauthorized = await worker.fetch(new Request(`https://worker.test/internal/reviews/photo/${photoId}/approve`, { method: "POST" }), bindings);
+  assert.equal(unauthorized.status, 401);
+  const response = await worker.fetch(new Request(`https://worker.test/internal/reviews/photo/${photoId}/approve`, {
+    method: "POST", headers: { Authorization: "Bearer cleanup-secret" },
+  }), bindings);
+  assert.equal(response.status, 204);
+  assert.equal(bindings.REVIEW_PHOTOS.objects.has(`pending/${photoId}`), false);
+  assert.equal(bindings.REVIEW_PHOTOS.objects.has(`approved/${photoId}`), true);
 });
