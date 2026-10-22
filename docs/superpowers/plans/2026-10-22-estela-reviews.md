@@ -61,7 +61,8 @@
 - `POST /api/reviews`: accepts multipart form data, verifies Turnstile and Origin, stores an optional image, then creates an Issue; returns a generic success message without the moderation URL or issue number.
 - `GET /api/reviews`: returns normalized reviews only from closed Issues carrying the review marker; returns no GitHub token or untrusted HTML.
 - `GET /api/reviews/:number/photo`: serves the private R2 object only if the matching Issue is closed and references that photo.
-- `POST /internal/reviews/photo/:photoId`: deletes the private R2 object after a GitHub deletion event; requires the cleanup secret.
+- `POST /internal/reviews/photo/:photoId`: deletes pending and approved private R2 objects after a GitHub deletion event; requires the cleanup secret.
+- `POST /internal/reviews/photo/:photoId/approve`: moves a pending private R2 object to the approved prefix when an Issue closes; requires the cleanup secret.
 - Issue title starts `[AVALIAÇÃO]`; the body has fixed category/rating/name/comment/photo fields and a version marker. Anonymous submissions omit the provided name.
 
 - [x] Write endpoint tests for valid Salon/Ateliê submissions, anonymous body, invalid Turnstile, wrong Origin, invalid data, GitHub failure, R2 failure, open/closed/reopened photo access, and cleanup-secret rejection.
@@ -81,9 +82,9 @@
 - Workflow permissions are limited to `issues: write`; the Worker cleanup secret is used only for deletion events, and the workflow passes the deleted Issue's `photoId`.
 - Labels: `estela-review` plus exactly one category label (`review-salao` or `review-atelie`).
 
-- [x] Test opened Salon/Ateliê events, unrelated issues, deletion cleanup, and events with malformed payloads.
+- [x] Test opened Salon/Ateliê events, Issue close/photo approval, deletion cleanup, unrelated issues, and malformed payloads.
 - [x] Run `node --test .github/scripts/review-issue-event.test.mjs`; confirm tests fail before implementation.
-- [x] Implement the event planner and workflow with no shell interpolation of untrusted Issue text.
+- [x] Implement the event planner and workflow for opened/closed/deleted Issues with no shell interpolation of untrusted Issue text.
 - [x] Run the event tests and inspect the workflow to confirm narrow permissions and correct event types.
 
 ### Task 4: Review form and public review UI
@@ -95,7 +96,7 @@
 - Modify: `beleza.html`
 - Modify: `costura.html`
 - Modify: `assets/site.css`
-- Create: `tests/reviews-ui.test.js`
+- Create: `tests/reviews-ui.test.mjs`
 
 **Interfaces:**
 - Review API URL and Turnstile public site key are configured through public meta values; no secret is placed in HTML/JavaScript.
@@ -103,11 +104,11 @@
 - Each service page shows recent reviews for its category below its work-photo gallery and links to `avaliacoes.html?categoria=...`.
 - `avaliacoes.html` supports both categories, rating filter, newest/oldest/highest-rated sort, and the form. The first visit shows a clear empty state, not sample reviews.
 
-- [ ] Test review ordering/filter helpers and text-only rendering behavior, including malicious Markdown/HTML strings.
-- [ ] Run `node --test tests/reviews-ui.test.js`; confirm tests fail before implementation.
-- [ ] Add accessible star choices with visible labels, anonymous toggle, optional photo input, public-visibility notice, submission status/error messages, and review lists under the existing galleries.
-- [ ] Run `node --test tests/reviews-ui.test.js` and verify existing site scripts still load.
-- [ ] Check responsive layout at narrow mobile and desktop widths; confirm all controls can be used by keyboard.
+- [x] Test review ordering/filter helpers and text-only rendering behavior, including malicious Markdown/HTML strings.
+- [x] Run `node --test tests/reviews-ui.test.mjs`; confirm tests fail before implementation.
+- [x] Add accessible star choices with visible labels, anonymous toggle, optional photo input, public-visibility notice, submission status/error messages, and review lists under the existing galleries.
+- [x] Run `node --test tests/reviews-ui.test.mjs` and verify existing site scripts still load.
+- [x] Check responsive layout at narrow mobile and desktop widths; confirm all controls can be used by keyboard.
 
 ### Task 5: Deployment wiring and end-to-end test guide
 
@@ -122,10 +123,10 @@
 - Deployment instructions cover creating the R2 bucket and Turnstile widget, setting secrets, running the Worker deploy workflow, and setting the site API URL.
 - If the required Cloudflare account/secrets are not available, code checks can pass but the live end-to-end flow remains unverified.
 
-- [ ] Document the setup and moderation steps, including the public Issue disclosure and how close/reopen/delete affects the site.
-- [ ] Add the Worker deployment workflow; do not run it until required repository secrets and Cloudflare resources are configured.
-- [ ] Run all Node checks with `node --test worker/test/*.test.js .github/scripts/review-issue-event.test.mjs tests/reviews-ui.test.js`.
-- [ ] Validate static HTML/CSS/JS and confirm no secret values or fake reviews are committed.
+- [x] Document the setup and moderation steps, including the public Issue disclosure and how close/reopen/delete affects the site.
+- [x] Add the Worker deployment workflow; do not run it until required repository secrets and Cloudflare resources are configured.
+- [x] Run all Node checks with `node --test worker/test/*.test.js .github/scripts/review-issue-event.test.mjs tests/reviews-ui.test.mjs`.
+- [x] Validate static HTML/CSS/JS and confirm no secret values or fake reviews are committed.
 - [ ] With Cloudflare configured, submit one test review for each category; verify open Issues stay hidden, closing reveals them, reopening hides them, deleting removes the photo, and filters/sorts work.
 - [ ] Verify GitHub Pages deployment separately from Worker deployment; report any part blocked by missing account configuration.
 

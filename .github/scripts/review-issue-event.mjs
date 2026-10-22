@@ -20,6 +20,7 @@ export function planIssueEvent(payload) {
   if (payload.action === "opened" && /^\[AVALIAÇÃO\]/i.test(issue.title || "")) {
     return { type: "label", issueNumber: issue.number, labels: ["estela-review", data.category === "salon" ? "review-salao" : "review-atelie"] };
   }
+  if (payload.action === "closed" && photoIdPattern.test(data.photoId || "")) return { type: "approve", photoId: data.photoId };
   if (payload.action === "deleted" && photoIdPattern.test(data.photoId || "")) return { type: "cleanup", photoId: data.photoId };
   return null;
 }
@@ -46,7 +47,8 @@ async function run() {
   } else {
     const base = process.env.REVIEW_WORKER_URL?.replace(/\/$/, "");
     if (!base || !process.env.PHOTO_CLEANUP_SECRET) throw new Error("Worker cleanup configuration is missing");
-    const response = await fetch(`${base}/internal/reviews/photo/${action.photoId}`, { method: "POST", headers: { Authorization: `Bearer ${process.env.PHOTO_CLEANUP_SECRET}` } });
+    const suffix = action.type === "approve" ? "/approve" : "";
+    const response = await fetch(`${base}/internal/reviews/photo/${action.photoId}${suffix}`, { method: "POST", headers: { Authorization: `Bearer ${process.env.PHOTO_CLEANUP_SECRET}` } });
     if (!response.ok && response.status !== 404) throw new Error(`Photo cleanup failed with status ${response.status}`);
   }
 }

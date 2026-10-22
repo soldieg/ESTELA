@@ -2,9 +2,10 @@ name: Moderate review Issues
 
 on:
   issues:
-    types: [opened, deleted]
+    types: [opened, closed, deleted]
 
 permissions:
+  contents: read
   issues: write
 
 jobs:

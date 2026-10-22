@@ -30,3 +30,8 @@ test("plans cleanup only for a deleted review with a valid photo UUID", () => {
   assert.equal(planIssueEvent({ action: "deleted", issue: issue() }), null);
   assert.equal(planIssueEvent({ action: "deleted", issue: issue("salon", "not-a-uuid") }), null);
 });
+
+test("plans private photo promotion when a review is approved", () => {
+  const photoId = "8a87189e-44fc-45b6-bd34-c507194136cb";
+  assert.deepEqual(planIssueEvent({ action: "closed", issue: issue("atelier", photoId) }), { type: "approve", photoId });
+});
